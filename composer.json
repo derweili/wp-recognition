@@ -1,0 +1,12 @@
+{
+    "name": "werbeagenten/wp-recognition",
+    "authors": [
+        {
+            "name": "Julian Weiland",
+            "email": "jw@werbeagenten.de"
+        }
+    ],
+    "require": {
+        "aws/aws-sdk-php": "^3.107"
+    }
+}
