@@ -44,6 +44,8 @@ class Recognizer
 
     $image = $this->get_image($attachment_id);
 
+    if( ! $image ) return;
+
     // $fp_image = fopen($path, 'r');
     //   $image = fread($fp_image, filesize($path));
     // fclose($fp_image);
@@ -58,12 +60,19 @@ class Recognizer
 
   function get_image( $attachment_id ){
     $path = get_attached_file( $attachment_id );
+    try {
+
+      $image = new ImageResize($path);
+      $image->resizeToWidth(2000);
+      $image_string = $image->getImageAsString();
 
 
-    $image = new ImageResize($path);
-    $image->resizeToWidth(2000);
-    $image_string = $image->getImageAsString();
+    }catch (Exception $e) {
+      return false;
+    }
+
     return $image_string;
+
     // return $this->scaled_image_path( $attachment_id, 'large');
   }
 
