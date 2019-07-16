@@ -23,6 +23,7 @@ if( defined('WP_RECOGNITION_KEY') && defined('WP_RECOGNITION_SECRET') ){
   require __DIR__ . '/inc/recognizer.php';
   require __DIR__ . '/inc/cli.php';
   require __DIR__ . '/inc/translator.php';
+  require __DIR__ . '/inc/alt.php';
 
   require __DIR__ . '/inc/wp-recognition.php';
 

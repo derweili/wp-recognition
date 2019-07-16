@@ -7,6 +7,7 @@
         }
     ],
     "require": {
-        "aws/aws-sdk-php": "^3.107"
+        "aws/aws-sdk-php": "^3.107",
+        "gumlet/php-image-resize": "^1.9"
     }
 }

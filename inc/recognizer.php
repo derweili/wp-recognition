@@ -4,6 +4,7 @@ namespace Derweili\WP_Recognition;
 
 use Aws\Rekognition\RekognitionClient;
 use Aws\Rekognition\Exception\RekognitionException;
+use \Gumlet\ImageResize;
 
 /**
  *
@@ -38,11 +39,11 @@ class Recognizer
 
   function recognize_media( $attachment_id ){
 
-    $path = $this->get_media_path($attachment_id);
+    $image = $this->get_image($attachment_id);
 
-    $fp_image = fopen($path, 'r');
-      $image = fread($fp_image, filesize($path));
-    fclose($fp_image);
+    // $fp_image = fopen($path, 'r');
+    //   $image = fread($fp_image, filesize($path));
+    // fclose($fp_image);
 
     $labels = $this->detectLabels( $image );
     $this->assignLabels($labels, $attachment_id);
@@ -52,8 +53,15 @@ class Recognizer
 
   }
 
-  function get_media_path( $attachment_id ){
-    return $this->scaled_image_path( $attachment_id, 'large');
+  function get_image( $attachment_id ){
+    $path = get_attached_file( $attachment_id );
+
+
+    $image = new ImageResize($path);
+    $image->resizeToWidth(2000);
+    $image_string = $image->getImageAsString();
+    return $image_string;
+    // return $this->scaled_image_path( $attachment_id, 'large');
   }
 
   function scaled_image_path($attachment_id, $size = 'thumbnail') {
@@ -75,7 +83,6 @@ class Recognizer
 
 
   function detectLabels( $image ){
-    echo 'detectLabels' . PHP_EOL;
     try {
 
       $result = $this->client->detectLabels([
@@ -98,8 +105,6 @@ class Recognizer
       echo "\n";
       die();
     }
-
-    echo 'labels detected' . PHP_EOL;
 
     $labels = $result->get("Labels");
     return $labels;

@@ -28,24 +28,30 @@ class WP_Recognition
 
     }
 
-    add_action('wp_generate_attachment_metadata', array(&$this, 'recognize_on_upload' ), 20, 2);
+    if( defined('WP_RECOGNITION_PROCESS_ON_UPLOAD') && WP_RECOGNITION_PROCESS_ON_UPLOAD ){
+
+      // add_action('wp_generate_attachment_metadata', array(&$this, 'recognize_on_upload' ), 20, 2);
+      add_action('add_attachment', array(&$this, 'recognize_on_upload' ), 20);
+    }
+
+    $altTags = new AltTags();
+    add_filter( 'wp_get_attachment_image_attributes', array( $altTags, 'alt_tag_fallback' ), 20, 3);
 
   }
 
   /**
    *
    */
-  function recognize_on_upload( $metadata, $attachment_id ){
-    error_log('inserted post type: ');
-
-    error_log(print_r($attachment_id, true));
+  function recognize_on_upload( $attachment_id ){
 
     $already_recognized = get_post_meta($attachment_id, '_wp_recognition_media_recognized', true);
-    error_log(print_r($already_recognized, true));
+
     if( ! $already_recognized ){
       $recognizer = new Recognizer();
 
       $recognizer->recognize_media($attachment_id);
+
+      do_action('after_image_recognition_process');
 
     }
 
