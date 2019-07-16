@@ -5,6 +5,7 @@ namespace Derweili\WP_Recognition;
 use Aws\Rekognition\RekognitionClient;
 use Aws\Rekognition\Exception\RekognitionException;
 use \Gumlet\ImageResize;
+use \Gumlet\ImageResizeException;
 
 /**
  *
@@ -67,7 +68,7 @@ class Recognizer
       $image_string = $image->getImageAsString();
 
 
-    }catch (Exception $e) {
+    }catch (ImageResizeException $e) {
       return false;
     }
 
