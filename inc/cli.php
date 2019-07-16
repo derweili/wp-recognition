@@ -40,7 +40,13 @@ if(class_exists('\WP_CLI')){
             \WP_CLI::success( "process all images" );
             $attachments = get_posts( array(
                 'posts_per_page' => isset( $assoc_args['number'] ) ? $assoc_args['number'] : 20,
-                'post_type' => 'attachment'
+                'post_type' => 'attachment',
+                'meta_query' => array(
+                  array(
+                     'key' => '_wp_recognition_media_recognized',
+                     'compare' => 'NOT EXISTS'
+                  ),
+                )
             ) );
 
             $images_to_process = [];
