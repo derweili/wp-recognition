@@ -39,9 +39,7 @@ class Recognizer
 
   function recognize_media( $attachment_id ){
 
-    $mimetype = get_post_mime_type($attachment_id);
-    var_dump($mimetype);
-    die();
+    $mimetype = get_post_mime_type($attachment_idgit co);
     if('image/jpeg' !== $mimetype && 'image/png' !== $mimetype ) return;
 
     $image = $this->get_image($attachment_id);
