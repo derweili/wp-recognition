@@ -24,6 +24,12 @@ if(class_exists('\WP_CLI')){
        *   - error
        * ---
        *
+       * [--number]
+       * : Whether or not to greet the person with success or error.
+       * ---
+       * default: 20
+       * ---
+       *
        * ## EXAMPLES
        *
        *     wp recognition recognize 20
