@@ -20,7 +20,9 @@ require __DIR__ . '/vendor/autoload.php';
 if( defined('WP_RECOGNITION_KEY') && defined('WP_RECOGNITION_SECRET') ){
 
   require __DIR__ . '/inc/labels.php';
-  require __DIR__ . '/inc/recognizer.php';
+  require __DIR__ . '/inc/landmarks.php';
+  require __DIR__ . '/inc/aws-recognizer.php';
+  require __DIR__ . '/inc/google-recognizer.php';
   require __DIR__ . '/inc/cli.php';
   require __DIR__ . '/inc/translator.php';
   require __DIR__ . '/inc/alt.php';

@@ -10,7 +10,7 @@ class WP_Recognition
 
   function __construct()
   {
-    // code...
+
     $this->register_hooks();
 
   }
@@ -18,8 +18,10 @@ class WP_Recognition
   function register_hooks(){
 
     $labels = new Labels();
-
     add_action('init', array($labels, 'register_taxonomy'));
+
+    $landmarks = new Landmarks();
+    add_action('init', array($landmarks, 'register_taxonomy'));
 
     if( defined('WP_RECOGNITION_TARGET_LANGUAGE') ){
 
@@ -43,11 +45,11 @@ class WP_Recognition
    *
    */
   function recognize_on_upload( $attachment_id ){
-
     $already_recognized = get_post_meta($attachment_id, '_wp_recognition_media_recognized', true);
 
     if( ! $already_recognized ){
-      $recognizer = new Recognizer();
+
+      $recognizer = WP_Recognition::getRecognizer();
 
       $recognizer->recognize_media($attachment_id);
 
@@ -55,6 +57,15 @@ class WP_Recognition
 
     }
 
+  }
+
+  public static function getRecognizer(){
+    if( defined('WP_RECOGNITION_SERVICE') && WP_RECOGNITION_SERVICE == 'GOOGLE' ){
+      $recognizer = new Google_Vision_Recognizer();
+    }else{
+      $recognizer = new AWS_Recognizer();
+    }
+    return $recognizer;
   }
 
 }

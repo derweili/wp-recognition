@@ -12,6 +12,8 @@ class Labels
 
   public $label_term_meta_key = '_wp_recognition_aws_label_name';
 
+  public static $cached_labels = [];
+
 
   public function register_taxonomy(){
     // $args = array(
@@ -35,7 +37,7 @@ class Labels
   		'update_item'       => __( 'Update Label', 'textdomain' ),
   		'add_new_item'      => __( 'Add New Label', 'textdomain' ),
   		'new_item_name'     => __( 'New Label Name', 'textdomain' ),
-  		'menu_name'         => __( 'Label', 'textdomain' ),
+  		'menu_name'         => __( 'Labels', 'textdomain' ),
   	);
 
   	$args = array(
@@ -63,6 +65,21 @@ class Labels
       $label_term_ids = array_merge($label_term_ids, $new_label_term_ids);
 
     }
+
+    $label_term_ids = array_unique( $label_term_ids );
+
+    wp_set_object_terms( $attachment_id, $label_term_ids, $this->taxonomy );
+
+  }
+
+  function assign_google_labels_to_attachment( $labels, $attachment_id ){
+
+    $label_term_ids = [];
+
+    $label_names = [];
+
+    foreach ($labels as $label) { $label_names[] = $label->description(); $label_term_ids[] = $this->get_label_term_id($label->description()); }
+
 
     $label_term_ids = array_unique( $label_term_ids );
 
@@ -103,6 +120,22 @@ class Labels
 
   }
 
+  /**
+   * Get Label ID by Name
+   */
+  function get_label_term_id( $name ){
+    $name = apply_filters( 'wp_recognition_label_name', $name );
+
+    $term_id = $this->get_label_term($name);
+    if($term_id){
+      return $term_id;
+    }else{
+      $inserted_term_id = $this->create_label_term($name, false);
+      return $inserted_term_id;
+    }
+
+  }
+
 
   function create_label_term( $name, $parent_term_id = false ){
 
@@ -124,6 +157,8 @@ class Labels
 
     $new_term_id = $inserted_term["term_id"];
 
+    Labels::$cached_labels[$name] = $new_term_id;
+
     add_term_meta($new_term_id, $this->label_term_meta_key, $name, true);
 
     return $new_term_id;
@@ -131,6 +166,10 @@ class Labels
   }
 
   function get_label_term( $name ){
+
+    // get label term from cache
+    if(isset(Labels::$cached_labels[$name])) return Labels::$cached_labels[$name];
+
     $args = array(
       'hide_empty' => false, // also retrieve terms which are not used yet
       'meta_query' => array(
@@ -147,6 +186,7 @@ class Labels
     $terms = get_terms( $args );
 
     if ($terms) {
+      Labels::$cached_labels[$name] = $terms[0]->term_id; // store in cache
       return $terms[0]->term_id;
     }
   }

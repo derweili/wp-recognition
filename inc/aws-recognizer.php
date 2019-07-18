@@ -8,9 +8,9 @@ use \Gumlet\ImageResize;
 use \Gumlet\ImageResizeException;
 
 /**
- *
- */
-class Recognizer
+*
+*/
+class AWS_Recognizer
 {
 
   /**

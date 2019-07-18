@@ -64,7 +64,7 @@ if(class_exists('\WP_CLI')){
 
           if ($images_to_process) {
             // code...
-            $recognizer = new Recognizer();
+            $recognizer = WP_Recognition::getRecognizer();
 
             foreach ($images_to_process as $id) {
               $recognizer->recognize_media($id);
@@ -74,6 +74,7 @@ if(class_exists('\WP_CLI')){
 
 
           do_action('after_image_recognition_process');
+
 
           \WP_CLI::success( count($images_to_process) . " Images processed" );
       }
